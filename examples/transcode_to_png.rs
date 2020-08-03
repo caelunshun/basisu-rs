@@ -7,7 +7,7 @@
 //!
 //! where `input.basis` is the input file, and `output.png` is the output file.
 
-use basis_universal::{TextureFormat, Transcoder};
+use basisu::{TextureFormat, Transcoder};
 use image::{ImageBuffer, ImageFormat, Rgba};
 use std::{env, error::Error};
 

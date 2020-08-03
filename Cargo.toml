@@ -1,13 +1,13 @@
 [package]
-name = "basis-universal"
+name = "basisu"
 version = "0.1.0" # remember to update html_root_url
 authors = ["caelunshun <caelunshun@gmail.com>"]
 edition = "2018"
 description = "Rust bindings to the basis_universal texture compression library"
-repository = "https://github.com/caelunshun/basis-universal-rs"
+repository = "https://github.com/caelunshun/basisu-rs"
 readme = "README.md"
 categories = ["compression", "encoding", "api-bindings", "game-development", "graphics"]
-keywords = ["basis", "universal", "gpu", "texture", "compression", "basis_universal"]
+keywords = ["basis", "basisu", "universal", "gpu", "texture", "compression", "basis_universal"]
 
 [dependencies]
 once_cell = "1"
