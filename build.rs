@@ -13,12 +13,18 @@ fn main() {
         .expect("failed to write bindings");
 
     cc::Build::new()
-        .cpp(true)
-        .flag_if_supported("-std=c++11")
         .file("bindings/bindings.cpp")
         .include("bindings")
+        .cpp(true)
+        .flag_if_supported("-std=c++11")
         .compile("basis_universal");
 
     println!("cargo:rustc-link-lib=static=basis_universal");
-    println!("cargo:rustc-flags=-l dylib=stdc++");
+
+    let target = std::env::var("TARGET").unwrap();
+    if target.contains("apple") {
+        println!("cargo:rustc-link-lib=dylib=c++");
+    } else if target.contains("linux") {
+        println!("cargo:rustc-link-lib=dylib=stdc++");
+    }
 }
