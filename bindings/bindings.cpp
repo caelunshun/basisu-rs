@@ -1,4 +1,3 @@
-#define BASISU_FORCE_DEVEL_MESSAGES 1
 #include "basisu_transcoder.cpp"
 
 extern "C"
