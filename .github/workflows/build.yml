@@ -1,0 +1,37 @@
+name: Rust
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ ubuntu-18.04, windows-2019, macos-10.15 ]
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Build
+      run: cargo build
+    - name: Run tests
+      run: cargo test
+    
+    - name: Install Clippy
+      run: rustup component add clippy
+      
+    - name: Run Clippy
+      run: cargo clippy
+      
+    - name: Install rustfmt
+      run: rustup component add rustfmt
+      
+    - name: Check formatting
+      run: cargo fmt -- --check
