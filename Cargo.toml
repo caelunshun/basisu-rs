@@ -1,0 +1,21 @@
+[package]
+name = "basis-universal-rs"
+version = "0.1.0" # remember to update html_root_url
+authors = ["caelunshun <caelunshun@gmail.com>"]
+edition = "2018"
+description = "Rust bindings to the basis_universal texture compression library"
+repository = "https://github.com/caelunshun/basis-universal-rs"
+readme = "README.md"
+categories = ["compression", "encoding", "api-bindings", "game-development", "graphics"]
+keywords = ["basis", "universal", "gpu", "texture", "compression", "basis_universal"]
+
+[dependencies]
+once_cell = "1"
+
+[dev-dependencies]
+# for transcode_to_png example
+image = { version = "0.23", default-features = false, features = ["png"] }
+
+[build-dependencies]
+cc = "1"
+bindgen = "0.54"
