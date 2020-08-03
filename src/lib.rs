@@ -7,7 +7,7 @@ use once_cell::sync::Lazy;
 pub mod sys {
     #![allow(warnings)]
 
-    include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+    include!("../bindings/bindings.rs");
 }
 
 // Ensure that basist::transcoder_init() is called.

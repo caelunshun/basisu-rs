@@ -1,1 +1,2 @@
 bindings/basisu_transcoder.cpp linguist-vendored
+bindings/bindings.rs linguist-generated
