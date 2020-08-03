@@ -14,10 +14,11 @@ fn main() {
 
     cc::Build::new()
         .cpp(true)
+        .flag_if_supported("-std=c++11")
         .file("bindings/bindings.cpp")
         .include("bindings")
         .compile("basis_universal");
-        
+
     println!("cargo:rustc-link-lib=static=basis_universal");
     println!("cargo:rustc-flags=-l dylib=stdc++");
 }
