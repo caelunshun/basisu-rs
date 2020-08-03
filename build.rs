@@ -13,9 +13,11 @@ fn main() {
         .expect("failed to write bindings");
 
     cc::Build::new()
+        .cpp(true)
         .file("bindings/bindings.cpp")
         .include("bindings")
         .compile("basis_universal");
+        
     println!("cargo:rustc-link-lib=static=basis_universal");
     println!("cargo:rustc-flags=-l dylib=stdc++");
 }
