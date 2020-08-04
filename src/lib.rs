@@ -78,6 +78,42 @@ pub enum TextureType {
     Volume,
 }
 
+impl From<sys::basisu_texture_type> for TextureType {
+    fn from(sys: sys::basisu_texture_type) -> Self {
+        match sys {
+            sys::basisu_texture_type_basisu_tex_type_2d => TextureType::D2,
+            sys::basisu_texture_type_basisu_tex_type_2d_array => TextureType::D2Array,
+            sys::basisu_texture_type_basisu_tex_type_cubemap_array => TextureType::Cubemap,
+            sys::basisu_texture_type_basisu_tex_type_video => TextureType::Video,
+            sys::basisu_texture_type_basisu_tex_type_volume => TextureType::Volume,
+            _ => TextureType::D2,
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct FileInfo {
+    pub texture_type: TextureType,
+    pub num_images: u32,
+    pub us_per_frame: u32,
+
+    pub has_alpha: bool,
+    pub is_etc1s: bool,
+}
+
+impl From<sys::basisu_file_info> for FileInfo {
+    fn from(sys: sys::basisu_file_info) -> Self {
+        FileInfo {
+            texture_type: TextureType::from(sys.texture_type),
+            num_images: sys.total_images,
+            us_per_frame: sys.us_per_frame,
+
+            has_alpha: sys.has_alpha_slices == 1,
+            is_etc1s: sys.etc1s == 1,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct ImageInfo {
     pub num_mipmap_levels: u32,
@@ -149,7 +185,7 @@ impl TextureFormat {
     fn buffer_size(self, info: &MipmapLevelInfo) -> usize {
         match self {
             TextureFormat::Rgba32 => info.width as usize * info.height as usize * 4,
-            _ => todo!(),
+            _ => todo!("texture formats other than RGBA are not yet supported"),
         }
     }
 }
@@ -182,18 +218,7 @@ impl<'a> TranscodeOp<'a> {
             )
         };
 
-        Ok(match sys_type {
-            sys::basisu_texture_type_basisu_tex_type_2d => TextureType::D2,
-            sys::basisu_texture_type_basisu_tex_type_2d_array => TextureType::D2Array,
-            sys::basisu_texture_type_basisu_tex_type_cubemap_array => TextureType::Cubemap,
-            sys::basisu_texture_type_basisu_tex_type_video => TextureType::Video,
-            sys::basisu_texture_type_basisu_tex_type_volume => TextureType::Volume,
-            _ => {
-                return Err(Error {
-                    msg: "unknown texture type",
-                })
-            }
-        })
+        Ok(TextureType::from(sys_type))
     }
 
     pub fn num_images(&self) -> u32 {
@@ -215,6 +240,34 @@ impl<'a> TranscodeOp<'a> {
                 image_index,
             )
         }
+    }
+
+    pub fn file_info(&self) -> Result<FileInfo> {
+        let info = unsafe {
+            let mut info = sys::basisu_file_info {
+                texture_type: 0,
+                us_per_frame: 0,
+                total_images: 0,
+                etc1s: 0,
+                has_alpha_slices: 0,
+            };
+
+            let status = sys::basisu_get_file_info(
+                self.transcoder.sys,
+                self.data.as_ptr().cast(),
+                self.data.len() as u32,
+                &mut info,
+            );
+            if status != 1 {
+                return Err(Error {
+                    msg: "failed to get file info",
+                });
+            }
+
+            info
+        };
+
+        Ok(FileInfo::from(info))
     }
 
     pub fn image_info(&self, image_index: u32) -> Result<ImageInfo> {

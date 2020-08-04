@@ -76,6 +76,18 @@ typedef enum
 
 typedef struct
 {
+    basisu_texture_type texture_type;
+
+    uint32_t us_per_frame;
+
+    uint32_t total_images;
+
+    int etc1s;
+    int has_alpha_slices;
+} basisu_file_info;
+
+typedef struct
+{
     uint32_t image_index;
     uint32_t total_levels;
 
@@ -130,12 +142,14 @@ int basisu_get_image_info(const struct basisu_transcoder *transcoder, const void
 int basisu_get_image_level_info(const struct basisu_transcoder *transcoder, const void *data, uint32_t data_len,
                                 basisu_image_level_info *info, uint32_t image_index, uint32_t level_index);
 
+int basisu_get_file_info(const struct basisu_transcoder *transcoder, const void *data, uint32_t data_len, basisu_file_info *file_info);
+
 int basisu_start_transcoding(struct basisu_transcoder *transcoder, const void *data, uint32_t data_len);
 int basisu_stop_transcoding(struct basisu_transcoder *transcoder);
 
 int basisu_transcode_image_level(struct basisu_transcoder *transcoder, const void *data, uint32_t data_len,
-                          uint32_t image_index, uint32_t level_index,
-                          void *output_blocks, uint32_t output_blocks_buf_size_in_blocks_or_pixels,
-                          basisu_transcoder_format format);
+                                 uint32_t image_index, uint32_t level_index,
+                                 void *output_blocks, uint32_t output_blocks_buf_size_in_blocks_or_pixels,
+                                 basisu_transcoder_format format);
 
 void basisu_transcoder_free(struct basisu_transcoder *transcoder);

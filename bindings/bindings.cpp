@@ -96,6 +96,22 @@ extern "C" int basisu_get_image_level_info(const struct basisu_transcoder *trans
     return status;
 }
 
+extern "C" int basisu_get_file_info(const struct basisu_transcoder *transcoder, const void *data, uint32_t data_len, basisu_file_info *file_info)
+{
+    const basist::basisu_transcoder *t = (const basist::basisu_transcoder *)transcoder;
+
+    basist::basisu_file_info info;
+    int status = t->get_file_info(data, data_len, info);
+
+    file_info->texture_type = (basisu_texture_type) info.m_tex_type;
+    file_info->total_images = info.m_total_images;
+    file_info->us_per_frame = info.m_us_per_frame;
+    file_info->has_alpha_slices = info.m_has_alpha_slices;
+    file_info->etc1s = info.m_etc1s;
+
+    return status;
+}
+
 extern "C" int basisu_start_transcoding(struct basisu_transcoder *transcoder, const void *data, uint32_t data_len)
 {
     basist::basisu_transcoder *t = (basist::basisu_transcoder *)transcoder;

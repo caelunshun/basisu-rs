@@ -1,6 +1,6 @@
-# basis-universal-rs
+# basisu-rs
 
-This crate is a safe Rust wrapper for the [`basic-universal`](https://github.com/BinomialLLC/basis_universal/) texture
+A safe Rust wrapper for the [`basic-universal`](https://github.com/BinomialLLC/basis_universal/) texture
 compression library.
 
 ## License

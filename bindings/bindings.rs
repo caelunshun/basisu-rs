@@ -236,6 +236,80 @@ pub const basisu_texture_type_cBASISTexTypeTotal: basisu_texture_type = 5;
 pub type basisu_texture_type = u32;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct basisu_file_info {
+    pub texture_type: basisu_texture_type,
+    pub us_per_frame: u32,
+    pub total_images: u32,
+    pub etc1s: ::std::os::raw::c_int,
+    pub has_alpha_slices: ::std::os::raw::c_int,
+}
+#[test]
+fn bindgen_test_layout_basisu_file_info() {
+    assert_eq!(
+        ::std::mem::size_of::<basisu_file_info>(),
+        20usize,
+        concat!("Size of: ", stringify!(basisu_file_info))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<basisu_file_info>(),
+        4usize,
+        concat!("Alignment of ", stringify!(basisu_file_info))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<basisu_file_info>())).texture_type as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(basisu_file_info),
+            "::",
+            stringify!(texture_type)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<basisu_file_info>())).us_per_frame as *const _ as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(basisu_file_info),
+            "::",
+            stringify!(us_per_frame)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<basisu_file_info>())).total_images as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(basisu_file_info),
+            "::",
+            stringify!(total_images)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<basisu_file_info>())).etc1s as *const _ as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(basisu_file_info),
+            "::",
+            stringify!(etc1s)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<basisu_file_info>())).has_alpha_slices as *const _ as usize
+        },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(basisu_file_info),
+            "::",
+            stringify!(has_alpha_slices)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct basisu_image_info {
     pub image_index: u32,
     pub total_levels: u32,
@@ -606,6 +680,14 @@ extern "C" {
         info: *mut basisu_image_level_info,
         image_index: u32,
         level_index: u32,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn basisu_get_file_info(
+        transcoder: *const basisu_transcoder,
+        data: *const ::std::os::raw::c_void,
+        data_len: u32,
+        file_info: *mut basisu_file_info,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
