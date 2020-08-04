@@ -389,6 +389,14 @@ impl<'a> Drop for BasisFile<'a> {
     }
 }
 
+// Safety: according to the basis_universal docs,
+// transcoders are thread safe.
+unsafe impl<'a> Send for BasisFile<'a> {}
+unsafe impl<'a> Sync for BasisFile<'a> {}
+
+unsafe impl Send for Transcoder {}
+unsafe impl Sync for Transcoder {}
+
 #[cfg(test)]
 mod tests {
     use super::*;
