@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - if: matrix.os == 'ubuntu-latest'
+    - if: matrix.os == 'ubuntu-18.04'
       run: sudo apt install libwayland-cursor0 libxkbcommon-dev libwayland-dev
       
     - name: Build

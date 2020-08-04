@@ -14,7 +14,7 @@ where small textures with fast transcoding times are desired.
 * 3D textures, used for volume data
 * Videos (stored as texture arrays with additional inter-frame compression)
 
-This crate allows you to decode any of the above through an ergonomic Rust interface.
+`basisu-rs` supports transcoding any of the above through a practical Rust interface.
 
 ## License
 
