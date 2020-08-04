@@ -28,15 +28,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("Reading {}...", input_path);
     let input_data = std::fs::read(&input_path)?;
 
-    let mut op = transcoder.begin(&input_data);
+    let mut file = transcoder.open(&input_data);
 
     // Figure out the frame count, frame rate, and video dimensions.
-    let file_info = op.file_info()?;
+    let file_info = file.file_info()?;
 
     let num_frames = file_info.num_images;
     let us_per_frame = file_info.us_per_frame as u64; // microseconds between frame displays
 
-    let first_image_info = op.image_info(0)?;
+    let first_image_info = file.image_info(0)?;
     let width = first_image_info.width as usize;
     let height = first_image_info.height as usize;
 
@@ -49,7 +49,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     while window.is_open() && !window.is_key_down(Key::Escape) && current_frame < num_frames {
         // Decode a frame and display it.
         println!("Transcoding frame {}...", current_frame);
-        let raw_buffer = op.transcode(current_frame, 0, TextureFormat::Rgba32)?;
+        let raw_buffer = file.transcode(current_frame, 0, TextureFormat::Rgba32)?;
 
         // Convert the RGBA32 buffer to the format understood by minifb.
         let mut buffer = vec![0u32; window.get_size().0 * window.get_size().1];

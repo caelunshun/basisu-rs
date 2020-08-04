@@ -24,14 +24,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     // transcoding multiple images.
     let mut transcoder = Transcoder::new();
 
-    // Start transoding the input data. transcoder.begin()
-    // returns a TranscodeOp which allows us to query
+    // Start transoding the input data. transcoder.open(data)
+    // returns a BasisFile which allows us to query
     // the image and transcode the data to another format.
     //
     // If we wanted to transcode another image using the
-    // same Transcoder, we would drop the current TranscodeOp
-    // and call Transcoder::begin() again.
-    let mut op = transcoder.begin(&input);
+    // same Transcoder, we would drop the current BasisFile
+    // and call Transcoder::open() again.
+    let mut file = transcoder.open(&input);
 
     // Print info about the input image.
     //
@@ -40,7 +40,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // contains a texture array, cubemap, or video, there may be multiple
     // image indices available. For normal 2D textures, only
     // image index 0 exists.
-    let info = op.image_info(0)?;
+    let info = file.image_info(0)?;
     println!(
         "Width: {}\nHeight: {}\nNumber of mipmap levels: {}",
         info.width, info.height, info.num_mipmap_levels,
@@ -52,7 +52,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // The second is the mipmap level to transcode. We'll use mipmap level 0,
     // which is the highest-resolution level.
     println!("Transcoding data...");
-    let raw_pixels = op.transcode(0, 0, TextureFormat::Rgba32)?;
+    let raw_pixels = file.transcode(0, 0, TextureFormat::Rgba32)?;
 
     // Use the image crate to write out a PNG.
     println!("Writing data to a PNG...");

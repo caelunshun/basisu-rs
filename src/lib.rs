@@ -48,13 +48,13 @@ impl Transcoder {
         Self { sys, _codebook }
     }
 
-    pub fn begin<'a>(&'a mut self, data: &'a [u8]) -> TranscodeOp<'a> {
+    pub fn open<'a>(&'a mut self, data: &'a [u8]) -> BasisFile<'a> {
         assert!(data.len() < u32::MAX as usize, "data too large");
         unsafe {
             sys::basisu_start_transcoding(self.sys, data.as_ptr().cast(), data.len() as u32);
         }
 
-        TranscodeOp {
+        BasisFile {
             transcoder: self,
             data,
         }
@@ -203,12 +203,12 @@ impl From<TextureFormat> for sys::basisu_transcoder_format {
     }
 }
 
-pub struct TranscodeOp<'a> {
+pub struct BasisFile<'a> {
     transcoder: &'a mut Transcoder,
     data: &'a [u8],
 }
 
-impl<'a> TranscodeOp<'a> {
+impl<'a> BasisFile<'a> {
     pub fn texture_type(&self) -> Result<TextureType> {
         let sys_type = unsafe {
             sys::basisu_get_texture_type(
@@ -381,7 +381,7 @@ impl<'a> TranscodeOp<'a> {
     }
 }
 
-impl<'a> Drop for TranscodeOp<'a> {
+impl<'a> Drop for BasisFile<'a> {
     fn drop(&mut self) {
         unsafe {
             sys::basisu_stop_transcoding(self.transcoder.sys);
@@ -403,17 +403,17 @@ mod tests {
     #[test]
     fn texture_type_is_correct() {
         let mut transcoder = Transcoder::new();
-        let op = transcoder.begin(CASE_1);
+        let file = transcoder.open(CASE_1);
 
-        assert_eq!(op.texture_type().unwrap(), TextureType::D2);
+        assert_eq!(file.texture_type().unwrap(), TextureType::D2);
     }
 
     #[test]
     fn image_info_is_correct() {
         let mut transcoder = Transcoder::new();
-        let op = transcoder.begin(CASE_1);
+        let file = transcoder.open(CASE_1);
 
-        let info = op.image_info(0).unwrap();
+        let info = file.image_info(0).unwrap();
 
         assert_eq!(info.num_mipmap_levels, 11); // 2^10 == 1024; extra mipmap level for 2^0==1
         assert_eq!(info.width, 1024);
@@ -423,10 +423,10 @@ mod tests {
     #[test]
     fn mipmap_level_info_is_correct() {
         let mut transcoder = Transcoder::new();
-        let op = transcoder.begin(CASE_1);
+        let file = transcoder.open(CASE_1);
 
         for mipmap_level in 0..11 {
-            let info = op.mipmap_level_info(0, mipmap_level).unwrap();
+            let info = file.mipmap_level_info(0, mipmap_level).unwrap();
 
             let dimensions = 2u32.pow(11 - mipmap_level - 1);
             assert_eq!(info.width, dimensions);
@@ -437,9 +437,9 @@ mod tests {
     #[test]
     fn transcoded_buffer_has_correct_size() {
         let mut transcoder = Transcoder::new();
-        let mut op = transcoder.begin(CASE_1);
+        let mut file = transcoder.open(CASE_1);
 
-        let buffer = op.transcode(0, 0, TextureFormat::Rgba32).unwrap();
+        let buffer = file.transcode(0, 0, TextureFormat::Rgba32).unwrap();
 
         assert_eq!(buffer.len(), 1024 * 1024 * 4);
     }
