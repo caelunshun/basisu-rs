@@ -1,7 +1,20 @@
 # basisu-rs
 
-A safe Rust wrapper for the [`basic-universal`](https://github.com/BinomialLLC/basis_universal/) texture
+A safe Rust wrapper for the [`basis-universal`](https://github.com/BinomialLLC/basis_universal/) texture
 compression library.
+
+This crate wraps the `basisu` transcoder, used to transcode `basis`-encoded files
+to various in-memory formats. It's intended for use in games,
+where small textures with fast transcoding times are desired.
+
+`.basis` files can contain:
+* 2D textures, i.e. images
+* 2D texture arrays
+* Cubemaps
+* 3D textures, used for volume data
+* Videos (stored as texture arrays with additional inter-frame compression)
+
+This crate allows you to decode any of the above through an ergonomic Rust interface.
 
 ## License
 
