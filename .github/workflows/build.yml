@@ -23,15 +23,15 @@ jobs:
       run: sudo apt install libwayland-cursor0 libxkbcommon-dev libwayland-dev
       
     - name: Build
-      run: cargo build --features ci
+      run: cargo build
     - name: Run tests
-      run: cargo test --features ci
+      run: cargo test
     
     - name: Install Clippy
       run: rustup component add clippy
       
     - name: Run Clippy
-      run: cargo clippy --features ci
+      run: cargo clippy
       
     - name: Install rustfmt
       run: rustup component add rustfmt
