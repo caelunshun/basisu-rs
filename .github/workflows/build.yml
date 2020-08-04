@@ -18,17 +18,20 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+
+    - if: matrix.os == 'ubuntu-latest'
+      run: sudo apt install libwayland-cursor0 libxkbcommon-dev libwayland-dev
       
     - name: Build
-      run: cargo build
+      run: cargo build --features ci
     - name: Run tests
-      run: cargo test
+      run: cargo test --features ci
     
     - name: Install Clippy
       run: rustup component add clippy
       
     - name: Run Clippy
-      run: cargo clippy
+      run: cargo clippy --features ci
       
     - name: Install rustfmt
       run: rustup component add rustfmt
